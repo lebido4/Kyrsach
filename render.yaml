@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    buildCommand: ""
+    startCommand: python app.py
+    autoDeploy: true
+
+  - type: web
+    name: frontend
+    env: docker
+    dockerfilePath: ./frontend/Dockerfile
+    buildCommand: ""
+    startCommand: nginx -g "daemon off;"
+    autoDeploy: true
+
+  - type: private
+    name: vm-creator
+    env: docker
+    dockerfilePath: ./vm_creator/Dockerfile
+    buildCommand: ""
+    startCommand: python vm_creator.py
+    autoDeploy: true
+
+  - type: web
+    name: prometheus
+    env: docker
+    dockerImage: prom/prometheus
+    startCommand: prometheus --config.file=/etc/prometheus/prometheus.yml
+    autoDeploy: true
+
+  - type: web
+    name: grafana
+    env: docker
+    dockerImage: grafana/grafana
+    startCommand: ""
+    autoDeploy: true
+
+databases:
+  - name: vm-management-db
+    region: oregon
+    plan: free
