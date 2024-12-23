@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ВМ Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>ВМ Management</h1>
+        <!-- Форма регистрации и входа -->
+        <div id="loginForm" class="login-form">
+            <h2>ВХОД</h2>
+            <form id="authForm">
+                <input type="text" class="input" id="username" placeholder="Логин" required>
+                <input type="password" id="password" class="input" placeholder="Пароль" required>
+                <button type="submit">Войти</button>
+            </form>
+            <button onclick="toggleForms()">Нет аккаунта? Регистрация</button>
+        </div>
+        
+        <!-- Форма регистрации -->
+        <div id="registerForm" class="register-form" style="display: none;">
+            <h2>Регистрация</h2>
+            <form id="registerAuthForm">
+                <input type="text" id="registerUsername" class="input" placeholder="Логик" required>
+                <input type="password" id="registerPassword" class="input" placeholder="Пароль" required>
+                <button type="submit">Зарегестрироваться</button>
+            </form>
+            <button onclick="toggleForms()">Есть аккаунт? Вход</button>
+        </div>
+
+        <!-- Содержимое после входа -->
+        <div id="mainContent" style="display: none;">
+            <div class="head_button">
+                <button id="addVmButton" onclick="document.getElementById('addVmForm').style.display='block';">Создать ВМ</button>
+                <button id="logoutButton" class="logout_button" onclick="logout()">Выход</button>
+            </div>
+            <div id="addVmForm" style="display: none;">
+                <h2>Создание ВМ</h2>
+                <form id="addVmFormSubmit">
+                    <input type="text" id="vmName" placeholder="VM name" required>
+                    <input type="number" id="vmCpu" placeholder="CPU Cores" required>
+                    <input type="number" id="vmRam" placeholder="RAM (GB)" required>
+                    <input type="number" id="vmDisk" placeholder="Disk Size (GB)" required>
+                    <button type="submit">Создать</button>
+                </form>
+            </div>
+
+            <h2>Ваши виртуальные машины</h2>
+            <div id="vmsList" class="vms-list"></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

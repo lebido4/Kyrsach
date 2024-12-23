@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: vm_management
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend_container
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://admin:secret@postgres:5432/vm_management
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+      
+  vm_creator:
+    build:
+      context: ./vm_creator
+      dockerfile: Dockerfile
+    container_name: vm_creator
+    environment:
+      DB_NAME: vm_management
+      DB_USER: admin
+      DB_PASSWORD: secret
+      DB_HOST: postgres
+      DB_PORT: 5432
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres
+      
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend_container
+    restart: always
+    ports:
+      - "80:80"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: google/cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    privileged: true
+
+
+volumes:
+  postgres_data:
